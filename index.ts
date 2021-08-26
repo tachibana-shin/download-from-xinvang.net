@@ -52,7 +52,9 @@ function download(url: string): Promise<void> {
 async function init() {
   console.log(chalk.blue(`Getting pages mp3 from ${url}`));
 
-  const { document } = new JSDOM((await axios.get<string>(url)).data).window;
+  const { document } = new JSDOM(
+    (await axios.get<string>(url).catch((e) => ({ data: "" }))).data
+  ).window;
 
   const listPageMP3 = Array.from(document.querySelectorAll(".fn-song a"))
     .map((item: any) => item.getAttribute("href"))
@@ -74,12 +76,16 @@ async function init() {
     const taskResults = await Promise.all(
       task.map(async (url) => {
         /// url page
-        const { document } = new JSDOM((await axios.get<string>(url)).data)
-          .window;
+        try {
+          const { document } = new JSDOM((await axios.get<string>(url)).data)
+            .window;
 
-        return (
-          document.querySelector("#tabService")?.getAttribute("href") ?? null
-        );
+          return (
+            document.querySelector("#tabService")?.getAttribute("href") ?? null
+          );
+        } catch {
+          return null;
+        }
       })
     );
 
@@ -128,6 +134,8 @@ async function init() {
       }/${tasksDownloadResult.flat(2).length}`
     )
   );
+
+  process.exit(0);
 }
 
 void init();
