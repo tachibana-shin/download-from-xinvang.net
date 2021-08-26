@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "./",
+    "outDir": "dist/",
+    // `baseUrl` must be placed on the extending configuration in devland, or paths won't be recognized
+    "esModuleInterop": true,
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "node",
+    // Needed to address https://github.com/quasarframework/app-extension-typescript/issues/36
+    // "noEmit": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "lib": [
+      "esnext",
+    ]
+  },
+  // Needed to avoid files copied into 'dist' folder (eg. a `.d.ts` file inside `src-ssr` folder)
+  // to be evaluated by TS when their original files has been updated
+  "exclude": [
+    "/dist",
+    ".quasar",
+    "node_modules",
+    "assets/labs",
+    "assets/templates",
+    "resources",
+    "src-capacitor",
+    "/src/worker/index.js"
+  ]
+}
