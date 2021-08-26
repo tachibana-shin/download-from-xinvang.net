@@ -13,7 +13,7 @@ function createTask<T>(array: readonly T[]): readonly T[][] {
   const tasks: T[][] = [];
 
   const { length } = array;
-  const lengthTasks = Math.ceil(length / COUNT_ONE_TASK) - 1;
+  const lengthTasks = Math.ceil(length / COUNT_ONE_TASK);
 
   for (let index = 0; index < lengthTasks; index++) {
     tasks.push(
@@ -123,7 +123,7 @@ async function init() {
   );
   console.log(
     chalk.red(
-      `Download success ${
+      `Download failure ${
         tasksDownloadResult.flat(2).filter((item) => item === false).length
       }/${tasksDownloadResult.flat(2).length}`
     )
