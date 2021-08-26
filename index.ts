@@ -2,9 +2,10 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 import chalk from "chalk";
 import downloadFile from "download-file";
-import { basename } from "path";
+import { basename, join } from "path";
+import fs from "fs";
 
-const COUNT_ONE_TASK = 2;
+const COUNT_ONE_TASK = 10;
 
 const [url, directory = "./", limit = Infinity] = process.argv.slice(2);
 
@@ -24,6 +25,12 @@ function createTask<T>(array: readonly T[]): readonly T[][] {
 }
 
 function download(url: string): Promise<void> {
+  if (
+    fs.existsSync(join(directory, basename(url.replace(/^[a-z]+:\/\//i, ""))))
+  ) {
+    return Promise.resolve();
+  }
+
   return new Promise<void>((resolve, reject) => {
     downloadFile(
       url,
@@ -90,13 +97,15 @@ async function init() {
 
     const taskResults = await Promise.all(
       task.map(async (url) => {
-        if (url) {
-          return download(url);
-        } else {
-          return false;
-        }
+        try {
+          if (url) {
+            return download(url);
+          } else {
+            return false;
+          }
+        } catch {}
       })
-    );
+    ).catch(() => [true]);
 
     console.log(
       chalk.green(`Done task ${tasksResults.indexOf(task) + 1}/${tasks.length}`)
